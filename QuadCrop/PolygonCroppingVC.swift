@@ -374,11 +374,13 @@ private extension PolygonCroppingVC {
             UIView.animate(withDuration: animationDuration) {
                 button.setImage(UIImage(named:"cropCircleCornerInvert"), for: .normal)
                 self.previewImageView.isHidden = false
+                button.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
             }
             
         case .ended, .cancelled, .failed:
-            [topLeftButton, topRightButton, bottomLeftButton, bottomRightButton].forEach {
-                $0.setImage(UIImage(named:"cropCircleCorner"), for: .normal)
+            [topLeftButton, topRightButton, bottomLeftButton, bottomRightButton].forEach { btn in
+                btn.setImage(UIImage(named:"cropCircleCorner"), for: .normal)
+                btn.transform = .identity
             }
             previewImageView.isHidden = true
             activeButton = nil
@@ -386,7 +388,7 @@ private extension PolygonCroppingVC {
             
         default:
             if activeButton !== button { return }
-            //print("UIPanGestureRecognizer state \(gesture.state) not handled in ReceiptEditCropImageView")
+            // Unhandled states
         }
         
         guard let imageFrame else {
@@ -442,7 +444,7 @@ private extension PolygonCroppingVC {
         //print("button location:", button.center)
         if let image = self.imageView.image {
             if let mainImage = self.stripMetadata(from: image) {
-                let zoomedImage = getZoomedImage(from: mainImage, at: button.center, zoomScale: 1, size: self.previewImageView.bounds.size)
+                let zoomedImage = getZoomedImage(from: mainImage, at: CGPoint(x: xPosition, y: yPosition), zoomScale: 1, size: self.previewImageView.bounds.size)
                 self.previewImageView.image = zoomedImage
             }
         }
@@ -820,6 +822,11 @@ extension PolygonCroppingVC {
     /// Position the magnifier preview
     func setMagnifierPosition(xPos: CGFloat, yPos: CGFloat) {
         guard let imageFrame = self.imageFrame else { return }
+        
+        self.previewImageView.center = CGPoint(x: xPos, y: yPos - 100)
+        
+        //You can manage safe area from here
+        /*
         let maxXSafeArea: CGFloat = imageFrame.origin.x + imageFrame.width - 1
         let minYSafeArea: CGFloat = imageFrame.origin.y + 1
         
@@ -830,6 +837,7 @@ extension PolygonCroppingVC {
         }else {
             self.previewImageView.center = CGPoint(x: max(30, min(xPos, maxXSafeArea - 30)), y: yPos - 100)
         }
+        */
     }
     
 }

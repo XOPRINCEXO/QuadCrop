@@ -20,6 +20,17 @@ class ViewController: UIViewController {
         imagePicker.allowsEditing = true
         present(imagePicker, animated: true, completion: nil)
     }
+    
+    
+    @IBAction func didTapTestRun(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "PolygonCroppingVC") as? PolygonCroppingVC
+        {
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        
+    }
+    
 }
 
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
